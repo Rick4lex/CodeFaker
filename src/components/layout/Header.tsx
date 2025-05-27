@@ -10,7 +10,7 @@ import { Menu, Home, FileText, Palette, Shirt, Mail, Sparkles } from 'lucide-rea
 const navItems = [
   { href: '/', label: 'Inicio', icon: Home },
   { href: '/servicios', label: 'Servicios', icon: FileText },
-  { href: '/dibujos', label: 'Dibujos', icon: Palette },
+  { href: '/dibujos', label: 'Arte', icon: Palette },
   { href: '/confecciones', label: 'Confecciones', icon: Shirt },
   { href: '/contacto', label: 'Contacto', icon: Mail },
 ];
@@ -46,8 +46,8 @@ export function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary">
-            <Sparkles className="h-7 w-7" />
-            <span>Code Foco</span>
+          <div className="h-7 w-7"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
+            <span>Code Faker</span>
           </Link>
           <div className="h-8 w-8 bg-muted rounded-md animate-pulse sm:hidden"></div> {/* Placeholder for mobile menu button */}
           <div className="hidden sm:flex space-x-4"> {/* Placeholder for desktop nav links */}
@@ -62,8 +62,8 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
-          <Sparkles className="h-7 w-7" />
-          <span>Code Foco</span>
+          <div className="h-7 w-7"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
+          <span>Code Faker</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -83,8 +83,8 @@ export function Header() {
             <SheetContent side="right" className="w-[280px] bg-background">
               <div className="p-6">
                 <Link href="/" className="mb-6 flex items-center space-x-2 text-xl font-bold text-primary" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Sparkles className="h-6 w-6" />
-                  <span>Code Foco</span>
+                <div className="h-6 w-6"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
+                  <span>Code Faker</span>
                 </Link>
                 <NavLinks mobile />
               </div>

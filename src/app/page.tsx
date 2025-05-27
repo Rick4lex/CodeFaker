@@ -37,12 +37,12 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="text-center py-12 md:py-20 bg-accent/30 rounded-lg shadow-sm">
         <div className="container mx-auto px-4">
-          <Sparkles className="mx-auto h-16 w-16 text-primary mb-4" />
+          <div className="mx-auto h-16 w-16 text-primary mb-4"> <img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img> </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-            Bienvenido a <span className="text-primary">Code Foco</span>
+            Bienvenido a <span className="text-primary">Code Faker</span>
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
-            Tu portafolio de soluciones creativas y servicios profesionales. Descubre un mundo de posibilidades.
+            Soluciones creativas y servicios profesionales. 
           </p>
           <div className="mt-8">
             <Link href="/contacto" passHref>

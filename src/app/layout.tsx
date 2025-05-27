@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Code Foco - Portafolio',
-  description: 'Portafolio de Code Foco: Servicios, Dibujos y Confecciones.',
+  title: 'Code Faker - Portafolio',
+  description: 'Portafolio CF: Servicios, Dibujos y Confecciones.',
 };
 
 export default function RootLayout({
