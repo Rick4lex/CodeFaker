@@ -38,7 +38,7 @@ export default function ServiciosPage() {
   return (
     <div className="space-y-8">
       <section className="text-center py-8">
-        <h1 className="text-4xl font-bold tracking-tight text-primary">Servicios de Trámites</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-primary">Servicios</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           Soluciones eficientes y confiables para todas tus necesidades de gestión y trámites.
         </p>
