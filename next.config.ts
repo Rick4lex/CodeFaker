@@ -28,6 +28,9 @@ const nextConfig: import('next').NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    esmExternals: 'loose',
+  },
   // Configuración para GitHub Pages
   basePath: process.env.NODE_ENV === 'production' ? '/CodeFaker' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/CodeFaker/' : '',
