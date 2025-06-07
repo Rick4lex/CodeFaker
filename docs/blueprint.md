@@ -1,4 +1,4 @@
-# **App Name**: Code Focus Portfolio
+# **App Name**: Code Faker Portfolio
 
 ## Core Features:
 
