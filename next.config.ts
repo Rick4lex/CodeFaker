@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig: import('next').NextConfig = {
-  output: 'export',
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   images: {
@@ -27,9 +26,6 @@ const nextConfig: import('next').NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  experimental: {
-    esmExternals: 'loose',
   },
   // Configuración para GitHub Pages
   basePath: process.env.NODE_ENV === 'production' ? '/CodeFaker' : '',
