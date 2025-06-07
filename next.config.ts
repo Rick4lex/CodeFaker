@@ -4,7 +4,6 @@ const nextConfig: import('next').NextConfig = {
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -27,9 +26,6 @@ const nextConfig: import('next').NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Configuración para GitHub Pages
-  basePath: process.env.NODE_ENV === 'production' ? '/CodeFaker' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/CodeFaker/' : '',
 };
 
 module.exports = nextConfig
