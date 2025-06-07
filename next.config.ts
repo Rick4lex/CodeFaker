@@ -1,14 +1,11 @@
-import type {NextConfig} from 'next';
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+const nextConfig: import('next').NextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -24,6 +21,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  /* config options here */
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  experimental: {
+    esmExternals: 'loose',
+  },
+  // Configuración para GitHub Pages
+  basePath: process.env.NODE_ENV === 'production' ? '/CodeFaker' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/CodeFaker/' : '',
 };
 
-export default nextConfig;
+module.exports = nextConfig
