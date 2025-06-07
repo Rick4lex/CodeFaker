@@ -45,7 +45,7 @@ export function Header() {
     return ( // Render a placeholder or simplified header during server rendering / pre-hydration
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary">
+          <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-[#E08C79]">
           <div className="h-7 w-7"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
             <span>Code Faker</span>
           </Link>
@@ -61,7 +61,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary hover:opacity-80 transition-opacity">
+        <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-[#E08C79] hover:opacity-80 transition-opacity">
           <div className="h-7 w-7"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
           <span>Code Faker</span>
         </Link>
@@ -82,7 +82,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] bg-background">
               <div className="p-6">
-                <Link href="/" className="mb-6 flex items-center space-x-2 text-xl font-bold text-primary" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/" className="mb-6 flex items-center space-x-2 text-xl font-bold text-[#E08C79]" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="h-6 w-6"><img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img></div>
                   <span>Code Faker</span>
                 </Link>

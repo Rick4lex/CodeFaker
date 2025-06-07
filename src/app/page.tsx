@@ -1,3 +1,4 @@
+
 import { CategoryCard } from '@/components/CategoryCard';
 import { Button } from '@/components/ui/button';
 import type { Category } from '@/lib/types';
@@ -39,7 +40,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto h-16 w-16 text-primary mb-4"> <img src="https://res.cloudinary.com/dyeppbrfl/image/upload/v1748304382/codefaker-04_pjvwsp.png"></img> </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-            Bienvenido a <span className="text-primary">Code Faker</span>
+            Bienvenido a <span className="text-[#E08C79]">Code Faker</span>
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
             Soluciones creativas y servicios profesionales. 
