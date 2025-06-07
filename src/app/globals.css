@@ -45,7 +45,7 @@
     --card-foreground: 46 71% 85%;
     --popover: 20 16% 12%; /* Darker popover */
     --popover-foreground: 46 71% 85%;
-    --primary: 11 67% 60%;
+    --primary: 22 20% 19%; /* Updated to #3A2E27 equivalent */
     --primary-foreground: 0 0% 100%;
     --secondary: 46 90% 60%;
     --secondary-foreground: 20 16% 10%;
@@ -57,7 +57,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 20 16% 25%;
     --input: 20 16% 25%;
-    --ring: 11 67% 60%;
+    --ring: 22 20% 19%; /* Updated to match new primary */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -65,12 +65,12 @@
     --chart-5: 340 75% 55%;
     --sidebar-background: 20 16% 12%;
     --sidebar-foreground: 46 71% 85%;
-    --sidebar-primary: 11 67% 60%;
+    --sidebar-primary: 22 20% 19%; /* Updated for consistency */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 46 90% 60%;
     --sidebar-accent-foreground: 20 16% 10%;
     --sidebar-border: 20 16% 20%;
-    --sidebar-ring: 11 67% 60%;
+    --sidebar-ring: 22 20% 19%; /* Updated for consistency */
   }
 }
 
