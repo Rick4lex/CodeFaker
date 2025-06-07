@@ -45,19 +45,19 @@
     --card-foreground: 46 71% 85%;
     --popover: 20 16% 12%; /* Darker popover */
     --popover-foreground: 46 71% 85%;
-    --primary: 22 20% 19%; /* Updated to #3A2E27 equivalent */
-    --primary-foreground: 0 0% 100%;
+    --primary: 46 90% 70%; /* #F7DC6F - For dark mode buttons */
+    --primary-foreground: 20 16% 10%; /* Dark text for #F7DC6F buttons */
     --secondary: 46 90% 60%;
-    --secondary-foreground: 20 16% 10%;
+    --secondary-foreground: 20 16% 19%; /* This was previously #3A2E27, now a general dark text */
     --muted: 20 16% 20%;
     --muted-foreground: 46 71% 70%;
-    --accent: 46 90% 60%;
+    --accent: 46 90% 60%; /* Original dark accent, slightly darker yellow */
     --accent-foreground: 20 16% 10%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 20 16% 25%;
     --input: 20 16% 25%;
-    --ring: 22 20% 19%; /* Updated to match new primary */
+    --ring: 46 90% 70%; /* Matches new dark --primary */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -65,12 +65,12 @@
     --chart-5: 340 75% 55%;
     --sidebar-background: 20 16% 12%;
     --sidebar-foreground: 46 71% 85%;
-    --sidebar-primary: 22 20% 19%; /* Updated for consistency */
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 46 90% 70%; /* Matches new dark --primary */
+    --sidebar-primary-foreground: 20 16% 10%; /* Matches new dark --primary-foreground */
     --sidebar-accent: 46 90% 60%;
     --sidebar-accent-foreground: 20 16% 10%;
     --sidebar-border: 20 16% 20%;
-    --sidebar-ring: 22 20% 19%; /* Updated for consistency */
+    --sidebar-ring: 46 90% 70%; /* Matches new dark --ring */
   }
 }
 
