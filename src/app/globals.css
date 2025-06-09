@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -48,10 +49,10 @@
     --primary: 46 90% 70%; /* #F7DC6F - For dark mode buttons */
     --primary-foreground: 20 16% 10%; /* Dark text for #F7DC6F buttons */
     --secondary: 46 90% 60%;
-    --secondary-foreground: 20 16% 19%; /* This was previously #3A2E27, now a general dark text */
+    --secondary-foreground: 20 16% 19%; 
     --muted: 20 16% 20%;
     --muted-foreground: 46 71% 70%;
-    --accent: 11 67% 68%; /* Original dark accent, slightly darker yellow */
+    --accent: 11 67% 68%; 
     --accent-foreground: 20 16% 10%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -65,12 +66,12 @@
     --chart-5: 340 75% 55%;
     --sidebar-background: 20 16% 12%;
     --sidebar-foreground: 46 71% 85%;
-    --sidebar-primary: 46 90% 70%; /* Matches new dark --primary */
-    --sidebar-primary-foreground: 20 16% 10%; /* Matches new dark --primary-foreground */
+    --sidebar-primary: 46 90% 70%; 
+    --sidebar-primary-foreground: 20 16% 10%; 
     --sidebar-accent: 46 90% 60%;
     --sidebar-accent-foreground: 20 16% 10%;
     --sidebar-border: 20 16% 20%;
-    --sidebar-ring: 46 90% 70%; /* Matches new dark --ring */
+    --sidebar-ring: 46 90% 70%; 
   }
 }
 
@@ -79,7 +80,9 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
-    /* Default font-family is handled by Geist in RootLayout */
+    @apply bg-background text-foreground font-sans; /* Ensure default font is applied */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-belanosima; /* Apply Belanosima to all heading levels */
   }
 }

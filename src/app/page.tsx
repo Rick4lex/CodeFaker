@@ -9,7 +9,7 @@ import Link from 'next/link';
 const categoryConfig: Record<string, { visible: boolean }> = {
   servicios: { visible: true },
   dibujos: { visible: true },
-  confecciones: { visible: false }, // Changed to false
+  confecciones: { visible: false },
   // Example: to hide 'dibujos', set: dibujos: { visible: false },
 };
 
@@ -58,10 +58,19 @@ export default function HomePage() {
           <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
             Soluciones creativas y servicios profesionales.
           </p>
-          <div className="mt-8">
+          <div className="mt-10 flex flex-col sm:flex-row sm:justify-center items-center sm:space-x-4 space-y-4 sm:space-y-0">
             <Link href="/contacto" passHref>
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
                 Contáctanos <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/catalogo" passHref>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-foreground border-foreground hover:bg-primary hover:text-primary-foreground dark:text-primary dark:border-primary dark:hover:bg-primary dark:hover:text-primary-foreground w-full sm:w-auto"
+              >
+                Explorar Catálogo <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
@@ -72,22 +81,21 @@ export default function HomePage() {
       {displayedCategories.length > 0 && (
         <section>
           <h2 className="text-3xl font-bold text-center mb-8 md:mb-12 text-foreground">Nuestras Categorías</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {displayedCategories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
+          <div className="flex justify-center">
+            <div className={`grid grid-cols-1 gap-6 md:gap-8 ${
+                displayedCategories.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'
+              } ${
+                displayedCategories.length === 1 ? 'lg:grid-cols-1' :
+                displayedCategories.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
+              }`}>
+              {displayedCategories.map((category) => (
+                <CategoryCard key={category.id} category={category} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Link to full catalog */}
-      <section className="text-center py-8">
-        <Link href="/catalogo" passHref>
-          <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-            Explorar Catálogo Completo <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </Link>
-      </section>
     </div>
   );
 }
