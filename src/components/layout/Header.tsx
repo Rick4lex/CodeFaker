@@ -10,9 +10,9 @@ import { Menu, Home, FileText, Palette, Shirt, Mail, Sparkles, ShoppingBag } fro
 const navItems = [
   { href: '/', label: 'Inicio', icon: Home },
   { href: '/catalogo', label: 'Catálogo', icon: ShoppingBag }, // Added Catalog link
-  { href: '/servicios', label: 'Servicios', icon: FileText },
-  { href: '/dibujos', label: 'Arte', icon: Palette },
-  { href: '/confecciones', label: 'Confecciones', icon: Shirt },
+  // { href: '/servicios', label: 'Servicios', icon: FileText },
+  // { href: '/dibujos', label: 'Arte', icon: Palette },
+  // { href: '/confecciones', label: 'Confecciones', icon: Shirt },
   { href: '/contacto', label: 'Contacto', icon: Mail },
 ];
 

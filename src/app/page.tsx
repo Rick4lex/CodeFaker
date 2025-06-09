@@ -9,7 +9,7 @@ import Link from 'next/link';
 const categoryConfig: Record<string, { visible: boolean }> = {
   servicios: { visible: true },
   dibujos: { visible: true },
-  confecciones: { visible: true },
+  confecciones: { visible: false }, // Changed to false
   // Example: to hide 'dibujos', set: dibujos: { visible: false },
 };
 
