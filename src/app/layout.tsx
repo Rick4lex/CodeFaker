@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+// Removed incorrect Geist font imports
 import { Belanosima } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
@@ -9,15 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ThemeToggleButton } from '@/components/ThemeToggleButton';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+// Removed geistSans and geistMono setup
 
 const belanosima = Belanosima({
   variable: '--font-belanosima',
@@ -37,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${belanosima.variable} antialiased flex flex-col min-h-screen`}>
+      <body className={`${belanosima.variable} antialiased flex flex-col min-h-screen`}> {/* Removed geist variables */}
         <ThemeProvider>
           <Header />
           <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
