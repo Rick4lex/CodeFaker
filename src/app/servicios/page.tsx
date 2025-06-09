@@ -1,40 +1,10 @@
-import { ProductCard } from '@/components/ProductCard';
-import type { Service } from '@/lib/types';
 
-const services: Service[] = [
-  {
-    id: 's1',
-    name: 'Gestión de Documentos Legales',
-    description: 'Asesoramiento y gestión completa para la obtención y legalización de documentos importantes. Simplificamos el proceso para ti.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'legal documents stamp',
-    price: 'Consultar',
-  },
-  {
-    id: 's2',
-    name: 'Trámites Administrativos',
-    description: 'Realizamos todo tipo de trámites administrativos ante entidades públicas y privadas, ahorrándote tiempo y esfuerzo.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'office paperwork form',
-  },
-  {
-    id: 's3',
-    name: 'Asesoría Personalizada',
-    description: 'Ofrecemos asesoría detallada y personalizada para tus necesidades específicas de gestión y trámites.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'consultation meeting handshake',
-  },
-   {
-    id: 's4',
-    name: 'Registro de Marcas y Patentes',
-    description: 'Protege tu propiedad intelectual con nuestro servicio experto en registro de marcas y patentes.',
-    imageUrl: 'https://placehold.co/600x400.png',
-    imageHint: 'trademark patent protection',
-    price: 'Consultar',
-  },
-];
+import { ProductCard } from '@/components/ProductCard';
+import { getProductsByCategory } from '@/lib/products';
 
 export default function ServiciosPage() {
+  const services = getProductsByCategory('Servicios');
+
   return (
     <div className="space-y-8">
       <section className="text-center py-8">
@@ -45,11 +15,15 @@ export default function ServiciosPage() {
       </section>
 
       <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {services.map((service) => (
-            <ProductCard key={service.id} product={service} />
-          ))}
-        </div>
+        {services.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {services.map((service) => (
+              <ProductCard key={service.id} product={service} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground">No hay servicios disponibles en este momento.</p>
+        )}
       </section>
     </div>
   );
