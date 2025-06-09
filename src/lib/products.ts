@@ -1,6 +1,4 @@
 
-// @ts-nocheck
-// TODO: Arreglar ts-nocheck. Demora demasiado en la ejecución.
 import type { Product } from './types';
 
 export const allProducts: Product[] = [

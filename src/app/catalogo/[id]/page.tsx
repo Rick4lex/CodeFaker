@@ -1,6 +1,4 @@
 
-// @ts-nocheck
-// TODO: Arreglar ts-nocheck. Demora demasiado en la ejecución.
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -280,4 +278,3 @@ export default function NotFound() {
   );
 }
 */
-

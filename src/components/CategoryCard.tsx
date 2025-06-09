@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,9 +18,10 @@ export function CategoryCard({ category }: CategoryCardProps) {
           <Image
             src={category.imageUrl}
             alt={category.title}
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{objectFit: "cover"}}
             className="rounded-t-lg"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             data-ai-hint={category.imageHint}
           />
         </div>
