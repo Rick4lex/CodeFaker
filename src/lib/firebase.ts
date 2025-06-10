@@ -1,7 +1,7 @@
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-// import { getAuth } from 'firebase/auth'; // If you need auth
+import { getAuth } from 'firebase/auth'; // If you need auth
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,17 +15,19 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
-// const auth = getAuth(app); // If you need auth
+const auth = getAuth(app); // If you need auth
 
-export { app, db /*, auth*/ };
+export { app, db , auth };
 
 // IMPORTANT: Ensure you have set up these environment variables in your Vercel project
-// NEXT_PUBLIC_FIREBASE_API_KEY
-// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-// NEXT_PUBLIC_FIREBASE_PROJECT_ID
-// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-// NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-// NEXT_PUBLIC_FIREBASE_APP_ID
+/*
+NEXT_PUBLIC_FIREBASE_API_KEY
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+NEXT_PUBLIC_FIREBASE_PROJECT_ID
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+NEXT_PUBLIC_FIREBASE_APP_ID
+*/
 
 // Also, ensure your Firestore security rules are set up correctly. For comments and reactions:
 /*
