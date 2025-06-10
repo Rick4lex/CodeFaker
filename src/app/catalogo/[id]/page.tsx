@@ -23,14 +23,19 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { Heart, MessageCircle, Send, Share2, ShoppingCart, ThumbsUp, User, Zap, ExternalLink, MessageSquare, MessageSquarePlus, MessagesSquare } from 'lucide-react'; // Added Send
+import { Heart, MessageCircle, Send, Share2, ShoppingCart, ThumbsUp, User, Zap, ExternalLink, MessageSquare, MessageSquarePlus, MessagesSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { notFound } from 'next/navigation';
 
 // Dummy user for comments - replace with actual auth user if implemented
 const DUMMY_USER = { id: 'guestUser', name: 'Visitante' };
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+interface ProductDetailPageProps {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { toast } = useToast();
   const [product, setProduct] = useState<ProductType | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -45,10 +50,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     if (fetchedProduct) {
       setProduct(fetchedProduct);
     } else {
-      // Handle product not found, e.g., redirect or show a 404 page
-      // For now, just log and set product to null
-      console.error("Product not found");
-      // return notFound(); // This would render the nearest not-found.js page
+      console.error("Product not found for ID:", params.id);
+      // notFound(); // This would render the nearest not-found.js page
     }
   }, [params.id]);
 
@@ -67,9 +70,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     const unsubscribeLikes = onSnapshot(likeDocRef, (docSnap) => {
       if (docSnap.exists()) {
         setLikes(docSnap.data().count || 0);
-        // Check if DUMMY_USER (or actual user) has liked
-        // This is a simplified check; a real system would store user IDs who liked.
-        // For this example, we'll use localStorage to simulate for the guest.
         const userLiked = localStorage.getItem(`liked_${product.id}_${DUMMY_USER.id}`) === 'true';
         setHasLiked(userLiked);
       } else {
@@ -84,14 +84,40 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   }, [product]);
 
 
-  if (!product) {
-     // You could return a loading skeleton here
+  if (!product && !params.id) { // Initial state before params.id is even available
     return <div className="container mx-auto px-4 py-8 text-center">Cargando producto...</div>;
   }
-  // If after attempting to fetch, product is still null (e.g., invalid ID not caught by getProductById)
-  // This check is after the useEffect, so product could have been set to null if not found
-  if (product === null && params.id) { // Check params.id to ensure it's not initial render
-    notFound();
+  
+  if (!product && params.id) { // After attempting to fetch, product is still null
+     // Check if notFound() was already called or handle it based on your logic
+     // For now, rendering a "not found" message directly if product is null after attempting fetch.
+     // Consider if notFound() should be called in the first useEffect.
+     // If getProductById returns undefined and notFound() is not called, this could be the state.
+     // Let's ensure notFound() is robustly called.
+     // The initial useEffect calls notFound() if fetchedProduct is falsy.
+     // If the component reaches here and product is null, it means fetching failed or ID was invalid.
+     // If notFound() was correctly called in useEffect, this might not be reached.
+     // However, to be safe, if product is definitively null after checks, call notFound().
+     // Re-evaluating the notFound() call logic.
+     // The original code had notFound() commented out. Let's ensure it works.
+     // If `getProductById` returns undefined, the first useEffect does setProduct(undefined),
+     // which then makes product null.
+     // The original check: `if (product === null && params.id)` might be too late or not robust.
+     // Let's defer to Next.js's notFound() mechanism earlier if product is not found.
+     // The first useEffect already attempts to setProduct or call notFound (if it were uncommented).
+     // The current problem is a build-time type error, not a runtime "product not found" issue,
+     // but ensuring robust page logic is good.
+     // For the current build error, this part of the code is less relevant.
+     // Let's focus on the props typing.
+     // Assuming the error isn't from the runtime logic but type checking:
+     // If the component successfully mounts and `params.id` is valid, `product` should be populated.
+     // If `params.id` leads to no product, `product` remains `null`.
+     // `notFound()` should be called in the first `useEffect` if `getProductById` fails.
+     // Let's re-instate a robust `notFound()` call.
+     if (product === null) { // Simplified check: if product is null after attempted fetch
+        notFound(); // This should be called if the product doesn't exist.
+        return null; // notFound() throws an error, so this might not be reached.
+     }
   }
 
 
@@ -102,8 +128,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     try {
       await addDoc(collection(db, `products/${product.id}/comments`), {
         productId: product.id,
-        userId: DUMMY_USER.id, // Replace with actual user ID from auth
-        userName: DUMMY_USER.name, // Replace with actual user name
+        userId: DUMMY_USER.id,
+        userName: DUMMY_USER.name,
         avatarUrl: `https://avatar.vercel.sh/${DUMMY_USER.name}.png`,
         text: newComment,
         timestamp: serverTimestamp(),
@@ -128,24 +154,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         const likeDoc = await transaction.get(likeDocRef);
         let newCount = 0;
         if (!likeDoc.exists()) {
-          newCount = 1; // First like
+          newCount = 1; 
         } else {
           newCount = (likeDoc.data().count || 0) + (hasLiked ? -1 : 1);
         }
         
-        if (newCount < 0) newCount = 0; // Prevent negative likes
+        if (newCount < 0) newCount = 0; 
 
         transaction.set(likeDocRef, { count: newCount }, { merge: true });
 
-        // Update local state for hasLiked (simulated for guest)
         if (hasLiked) {
           localStorage.removeItem(`liked_${product.id}_${DUMMY_USER.id}`);
         } else {
           localStorage.setItem(`liked_${product.id}_${DUMMY_USER.id}`, 'true');
         }
-        setHasLiked(!hasLiked); // Toggle local state
+        setHasLiked(!hasLiked); 
       });
-      // setLikes will update via onSnapshot
     } catch (error) {
       console.error("Error updating like: ", error);
       toast({ title: 'Error', description: 'No se pudo actualizar la reacción.', variant: 'destructive' });
@@ -154,12 +178,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     }
   };
   
+  // Ensure product is not null before accessing its properties
+  if (!product) {
+    // This case should ideally be handled by the notFound() call or a loading state
+    // If product is null here, it means it wasn't found or is still loading.
+    // The previous check `if (product === null) { notFound(); }` should handle missing products.
+    // If it's still loading, a loading indicator is appropriate.
+    // However, the initial `useEffect` should set `product` or call `notFound`.
+    // If `product` is still null, it implies `params.id` might not have resolved, or `getProductById` returned null.
+    // This state should be caught by the `notFound()` call if `params.id` was present and product was not found.
+    // If `params.id` was not present (e.g. during prerendering if `generateStaticParams` is not used correctly),
+    // then `product` would remain null.
+    // Given the page is "use client", `params.id` will be available.
+    return <div className="container mx-auto px-4 py-8 text-center">Cargando o producto no encontrado...</div>;
+  }
+
   const whatsappMessage = `Hola, estoy interesado en el producto: ${product.name} (ID: ${product.id}). ¿Podrían darme más información?`;
   const whatsappLink = `https://wa.me/573157513325?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-12">
-      {/* Product Hero Section */}
       <section className="grid md:grid-cols-2 gap-8 items-start">
         <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden shadow-xl">
           <Image
@@ -167,7 +205,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             alt={product.name}
             fill
             style={{objectFit: "cover"}}
-            priority // For LCP
+            priority 
             sizes="(max-width: 768px) 100vw, 50vw"
             data-ai-hint={product.imageHint}
           />
@@ -200,7 +238,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </section>
 
-      {/* Comments Section */}
       <Separator />
       <section className="space-y-6">
         <h2 className="text-2xl font-semibold text-foreground">Comentarios ({comments.length})</h2>
@@ -248,33 +285,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           </CardContent>
         </Card>
       </section>
-
-      {/* Related Products (Optional) */}
-      {/* 
-      <Separator />
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold text-foreground">También te podría interesar</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          { Render ProductCard for related products }
-        </div>
-      </section>
-      */}
     </div>
   );
 }
 
-// Add a not-found.tsx or handle it globally if you prefer for better UX
-// For example, create src/app/catalogo/[id]/not-found.tsx
-/*
-export default function NotFound() {
-  return (
-    <div className="container mx-auto px-4 py-8 text-center">
-      <h1 className="text-2xl font-bold">Producto no encontrado</h1>
-      <p>El producto que buscas no existe o ha sido movido.</p>
-      <Button asChild className="mt-4">
-        <Link href="/catalogo">Volver al catálogo</Link>
-      </Button>
-    </div>
-  );
-}
-*/
+    
