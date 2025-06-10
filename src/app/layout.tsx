@@ -8,6 +8,8 @@ import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ThemeToggleButton } from '@/components/ThemeToggleButton';
+import { Analytics } from '@vercel/analytics/next';
+
 
 // Removed geistSans and geistMono setup
 
@@ -21,6 +23,8 @@ export const metadata: Metadata = {
   title: 'Code Faker - Portafolio',
   description: 'Portafolio CF: Servicios, Dibujos y Confecciones.',
 };
+
+
 
 export default function RootLayout({
   children,
@@ -39,6 +43,7 @@ export default function RootLayout({
           <ThemeToggleButton />
           <Toaster />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
