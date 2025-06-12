@@ -1,5 +1,1 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+<a href='https://web.facebook.com/marketplace/profile/100073179595930/' border='0' style='cursor:pointer;display:block'><img src='https://storage2.me-qr.com/qr/216952802.png' alt='Create qr code for free'></a>
