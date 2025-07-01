@@ -23,7 +23,7 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { Heart, MessageCircle, Send, Share2, ShoppingCart, ThumbsUp, User, Zap, ExternalLink, MessageSquare, MessageSquarePlus, MessagesSquare } from 'lucide-react';
+import { MessageSquare, Send, ThumbsUp, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { notFound } from 'next/navigation';
 
@@ -37,7 +37,15 @@ interface ProductDetailPageProps {
 
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { toast } = useToast();
-  const [product, setProduct] = useState<ProductType | null>(null);
+
+  // Fetch product synchronously. If not found, call notFound() immediately.
+  // This is the correct pattern for Client Components with sync data fetching.
+  const productData = getProductById(params.id);
+  if (!productData) {
+    notFound();
+  }
+
+  const [product, setProduct] = useState<ProductType>(productData);
   const [comments, setComments] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
@@ -46,17 +54,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const [isLiking, setIsLiking] = useState(false);
 
   useEffect(() => {
-    const fetchedProduct = getProductById(params.id);
-    if (fetchedProduct) {
-      setProduct(fetchedProduct);
-    } else {
-      console.error("Product not found for ID:", params.id);
-      // notFound(); // This would render the nearest not-found.js page
-    }
-  }, [params.id]);
-
-  useEffect(() => {
-    if (!product) return;
+    // The product object is guaranteed to exist here due to the check above.
 
     // Fetch comments
     const commentsQuery = query(collection(db, `products/${product.id}/comments`), orderBy('timestamp', 'desc'));
@@ -66,10 +64,11 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
     });
 
     // Fetch likes
-    const likeDocRef = doc(db, `products/${product.id}/likes`, 'likeData'); // Using a specific doc for likes
+    const likeDocRef = doc(db, `products/${product.id}/likes`, 'likeData');
     const unsubscribeLikes = onSnapshot(likeDocRef, (docSnap) => {
       if (docSnap.exists()) {
         setLikes(docSnap.data().count || 0);
+        // localStorage is client-side only, this is safe inside onSnapshot
         const userLiked = localStorage.getItem(`liked_${product.id}_${DUMMY_USER.id}`) === 'true';
         setHasLiked(userLiked);
       } else {
@@ -81,49 +80,11 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       unsubscribeComments();
       unsubscribeLikes();
     };
-  }, [product]);
-
-
-  if (!product && !params.id) { // Initial state before params.id is even available
-    return <div className="container mx-auto px-4 py-8 text-center">Cargando producto...</div>;
-  }
-  
-  if (!product && params.id) { // After attempting to fetch, product is still null
-     // Check if notFound() was already called or handle it based on your logic
-     // For now, rendering a "not found" message directly if product is null after attempting fetch.
-     // Consider if notFound() should be called in the first useEffect.
-     // If getProductById returns undefined and notFound() is not called, this could be the state.
-     // Let's ensure notFound() is robustly called.
-     // The initial useEffect calls notFound() if fetchedProduct is falsy.
-     // If the component reaches here and product is null, it means fetching failed or ID was invalid.
-     // If notFound() was correctly called in useEffect, this might not be reached.
-     // However, to be safe, if product is definitively null after checks, call notFound().
-     // Re-evaluating the notFound() call logic.
-     // The original code had notFound() commented out. Let's ensure it works.
-     // If `getProductById` returns undefined, the first useEffect does setProduct(undefined),
-     // which then makes product null.
-     // The original check: `if (product === null && params.id)` might be too late or not robust.
-     // Let's defer to Next.js's notFound() mechanism earlier if product is not found.
-     // The first useEffect already attempts to setProduct or call notFound (if it were uncommented).
-     // The current problem is a build-time type error, not a runtime "product not found" issue,
-     // but ensuring robust page logic is good.
-     // For the current build error, this part of the code is less relevant.
-     // Let's focus on the props typing.
-     // Assuming the error isn't from the runtime logic but type checking:
-     // If the component successfully mounts and `params.id` is valid, `product` should be populated.
-     // If `params.id` leads to no product, `product` remains `null`.
-     // `notFound()` should be called in the first `useEffect` if `getProductById` fails.
-     // Let's re-instate a robust `notFound()` call.
-     if (product === null) { // Simplified check: if product is null after attempted fetch
-        notFound(); // This should be called if the product doesn't exist.
-        return null; // notFound() throws an error, so this might not be reached.
-     }
-  }
-
+  }, [product.id]); // Depend on product.id to re-run if the product changes.
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !product) return;
+    if (!newComment.trim()) return;
     setIsSubmittingComment(true);
     try {
       await addDoc(collection(db, `products/${product.id}/comments`), {
@@ -145,7 +106,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   };
 
   const handleLike = async () => {
-    if (!product || isLiking) return;
+    if (isLiking) return;
     setIsLiking(true);
     const likeDocRef = doc(db, `products/${product.id}/likes`, 'likeData');
 
@@ -177,21 +138,6 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
       setIsLiking(false);
     }
   };
-  
-  // Ensure product is not null before accessing its properties
-  if (!product) {
-    // This case should ideally be handled by the notFound() call or a loading state
-    // If product is null here, it means it wasn't found or is still loading.
-    // The previous check `if (product === null) { notFound(); }` should handle missing products.
-    // If it's still loading, a loading indicator is appropriate.
-    // However, the initial `useEffect` should set `product` or call `notFound`.
-    // If `product` is still null, it implies `params.id` might not have resolved, or `getProductById` returned null.
-    // This state should be caught by the `notFound()` call if `params.id` was present and product was not found.
-    // If `params.id` was not present (e.g. during prerendering if `generateStaticParams` is not used correctly),
-    // then `product` would remain null.
-    // Given the page is "use client", `params.id` will be available.
-    return <div className="container mx-auto px-4 py-8 text-center">Cargando o producto no encontrado...</div>;
-  }
 
   const whatsappMessage = `Hola, estoy interesado en el producto: ${product.name} (ID: ${product.id}). ¿Podrían darme más información?`;
   const whatsappLink = `https://wa.me/573157513325?text=${encodeURIComponent(whatsappMessage)}`;
@@ -288,5 +234,3 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
     </div>
   );
 }
-
-    
