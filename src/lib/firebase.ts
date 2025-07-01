@@ -1,8 +1,7 @@
 
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth'; // If you need auth
-
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getAuth, type Auth } from 'firebase/auth'; // If you need auth
 
 // ============================================================================
 // ¡¡¡ACCIÓN URGENTE REQUERIDA!!!
@@ -37,19 +36,29 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Comprobación mejorada para un mensaje de error más claro.
-for (const [key, value] of Object.entries(firebaseConfig)) {
-  if (!value) {
-    const envVarName = `NEXT_PUBLIC_FIREBASE_${key.replace(/([A-Z])/g, '_$1').toUpperCase()}`;
-    throw new Error(`Error de configuración de Firebase: La variable de entorno ${envVarName} no está configurada. Por favor, añádela a la configuración de tu proyecto en Vercel o en un archivo local .env.local.`);
-  }
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
+let auth: Auth | null = null;
+
+// Solo inicializamos Firebase si la clave de API está presente.
+if (firebaseConfig.apiKey) {
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    db = getFirestore(app);
+    auth = getAuth(app);
+} else {
+    console.warn(`
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!  ADVERTENCIA: VARIABLES DE ENTORNO DE FIREBASE NO CONFIGURADAS                 !!
+    !!                                                                              !!
+    !!  La aplicación se ejecutará, pero las funciones que dependen de Firebase      !!
+    !!  (productos, admin, comentarios) no funcionarán correctamente.               !!
+    !!                                                                              !!
+    !!  Para solucionarlo, añade tus credenciales de Firebase a la configuración     !!
+    !!  de tu proyecto en Vercel o en un archivo local .env.local.                   !!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    `);
 }
 
-
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore(app);
-const auth = getApp ? getAuth(app) : undefined;
 
 export { app, db , auth };
 

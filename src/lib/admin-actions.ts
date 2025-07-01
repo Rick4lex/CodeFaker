@@ -63,7 +63,11 @@ const productSchema = z.object({
 export async function saveProduct(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session.isAdmin) {
-    return { error: 'No autorizado.' };
+    return { success: false, message: 'No autorizado.' };
+  }
+
+  if (!db) {
+    return { success: false, message: 'Error: La base de datos no está configurada. Revisa las variables de entorno de Firebase.' };
   }
 
   const rawData = {
@@ -118,22 +122,26 @@ export async function saveProduct(prevState: any, formData: FormData) {
     revalidatePath('/catalogo');
     revalidatePath('/');
     
-    return { message: `Producto ${id ? 'actualizado' : 'creado'} con éxito.` };
+    return { success: true, message: `Producto ${id ? 'actualizado' : 'creado'} con éxito.` };
 
   } catch (error) {
     console.error("Error guardando el producto:", error);
-    return { message: 'Error en la base de datos.', error: (error as Error).message };
+    return { success: false, message: 'Error en la base de datos.', error: (error as Error).message };
   }
 }
 
 export async function deleteProduct(id: string) {
     const session = await getSession();
     if (!session.isAdmin) {
-        return { error: 'No autorizado.' };
+        return { success: false, message: 'No autorizado.' };
+    }
+
+    if (!db) {
+        return { success: false, message: 'Error: La base de datos no está configurada.' };
     }
 
     if (!id) {
-        return { error: 'ID de producto no válido.' };
+        return { success: false, message: 'ID de producto no válido.' };
     }
 
     try {

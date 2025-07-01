@@ -20,6 +20,10 @@ const mapDocToProduct = (doc: any): Product => {
 };
 
 export const getProducts = async (): Promise<Product[]> => {
+  if (!db) {
+    console.warn("Firestore (db) no está inicializado. Devolviendo lista de productos vacía.");
+    return [];
+  }
   try {
     const productsCollection = collection(db, 'products');
     const productSnapshot = await getDocs(productsCollection);
@@ -32,6 +36,10 @@ export const getProducts = async (): Promise<Product[]> => {
 };
 
 export const getProductById = async (id: string): Promise<Product | undefined> => {
+   if (!db) {
+    console.warn(`Firestore (db) no está inicializado. No se puede obtener el producto con id: ${id}.`);
+    return undefined;
+  }
   try {
     const productDocRef = doc(db, 'products', id);
     const productSnap = await getDoc(productDocRef);
@@ -48,6 +56,10 @@ export const getProductById = async (id: string): Promise<Product | undefined> =
 };
 
 export const getProductsByCategory = async (category: string): Promise<Product[]> => {
+  if (!db) {
+    console.warn(`Firestore (db) no está inicializado. No se pueden obtener productos para la categoría: ${category}.`);
+    return [];
+  }
   if (category === 'Todos') return getProducts();
   try {
     const q = query(collection(db, 'products'), where('category', '==', category));
@@ -60,12 +72,20 @@ export const getProductsByCategory = async (category: string): Promise<Product[]
 };
 
 export const getAllCategories = async (): Promise<string[]> => {
+   if (!db) {
+    console.warn("Firestore (db) no está inicializado. No se pueden obtener las categorías.");
+    return ['Todos'];
+  }
   const products = await getProducts();
   const categories = new Set(products.map(p => p.category));
   return ['Todos', ...Array.from(categories)];
 };
 
 export const getAllSubCategories = async (category?: string): Promise<string[]> => {
+  if (!db) {
+    console.warn("Firestore (db) no está inicializado. No se pueden obtener las subcategorías.");
+    return ['Todas'];
+  }
   let productsToFilter = await getProducts();
   if (category && category !== 'Todos') {
     productsToFilter = productsToFilter.filter(p => p.category === category);
