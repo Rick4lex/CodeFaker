@@ -5,26 +5,24 @@ import { getAuth } from 'firebase/auth'; // If you need auth
 
 
 // ============================================================================
-// IMPORTANT: How to Fix the "(auth/invalid-api-key)" Error
+// ¡¡¡ACCIÓN URGENTE REQUERIDA!!!
 // ============================================================================
-// This error means your Firebase environment variables are not set correctly.
-// You need to provide them so the application can connect to Firebase.
+// El error "invalid-api-key" significa que tus variables de entorno de Firebase
+// no están configuradas. Debes proporcionarlas para que la aplicación funcione.
 //
-// 1. **For Local Development**:
-//    - Create a file named `.env.local` in the root of your project.
-//    - Add your Firebase configuration keys to this file.
+// 1. **Para Desarrollo Local**:
+//    - Crea un archivo llamado `.env.local` en la raíz de tu proyecto.
+//    - Añade tus claves de configuración de Firebase a este archivo.
 //
-// 2. **For Deployment (Vercel, etc.)**:
-//    - Go to your project settings on your hosting provider (e.g., Vercel).
-//    - Add the same keys as "Environment Variables".
+// 2. **Para Producción (Vercel)**:
+//    - Ve a la configuración de tu proyecto en Vercel.
+//    - Añade las mismas claves en la sección "Environment Variables".
 //
-// You can get these keys from your Firebase project settings page.
-//
-// --- Example for your .env.local file ---
+// --- Ejemplo para tu archivo .env.local o Vercel ---
 // NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
-// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-// NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tu-proyecto.firebaseapp.com
+// NEXT_PUBLIC_FIREBASE_PROJECT_ID=tu-proyecto-id
+// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=tu-proyecto.appspot.com
 // NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1234567890
 // NEXT_PUBLIC_FIREBASE_APP_ID=1:1234567890:web:abcdef...
 // ============================================================================
@@ -39,41 +37,45 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Check if Firebase config keys are provided to give a better error message.
-if (!firebaseConfig.apiKey) {
-    throw new Error('Firebase API Key is not set. Please add NEXT_PUBLIC_FIREBASE_API_KEY to your .env.local file or environment variables.');
+// Comprobación mejorada para un mensaje de error más claro.
+for (const [key, value] of Object.entries(firebaseConfig)) {
+  if (!value) {
+    const envVarName = `NEXT_PUBLIC_FIREBASE_${key.replace(/([A-Z])/g, '_$1').toUpperCase()}`;
+    throw new Error(`Error de configuración de Firebase: La variable de entorno ${envVarName} no está configurada. Por favor, añádela a la configuración de tu proyecto en Vercel o en un archivo local .env.local.`);
+  }
 }
+
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
-const auth = getAuth(app); // If you need auth
+const auth = getApp ? getAuth(app) : undefined;
 
 export { app, db , auth };
 
 
 /*
-Note: Your Firestore security rules should be set in the Firebase console, not here.
-Example rules:
+Nota: Tus reglas de seguridad de Firestore deben configurarse en la consola de Firebase.
+Ejemplo de reglas:
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /products/{productId} {
       allow read: if true;
-      allow write: if request.auth != null; // For admin actions
+      allow write: if request.auth != null; // Para acciones de admin
 
       match /comments/{commentId} {
         allow read: if true;
-        allow create: if true; // Allow anonymous comments
+        allow create: if true; // Permitir comentarios anónimos
       }
        match /likes/{likeId} {
         allow read: if true;
-        allow write: if true; // Allow anyone to like/unlike
+        allow write: if true; // Permitir que cualquiera dé "me gusta"
       }
     }
     match /contactSubmissions/{submissionId} {
-        allow create: if true; // Allow anyone to submit the contact form
+        allow create: if true; // Permitir que cualquiera envíe el formulario de contacto
     }
   }
 }
