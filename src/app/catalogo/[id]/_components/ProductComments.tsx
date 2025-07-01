@@ -29,9 +29,10 @@ export function ProductComments({ productId }: { productId: string }) {
     const [comments, setComments] = useState<CommentType[]>([]);
     const [newComment, setNewComment] = useState('');
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const firestoreDb = db; // Assign db to a local constant
     
     // Si la base de datos no está configurada, no muestra la sección de comentarios.
-    if (!db) {
+    if (!firestoreDb) {
         return (
             <section className="space-y-6">
                 <h2 className="text-2xl font-semibold text-foreground">Comentarios</h2>
@@ -47,20 +48,22 @@ export function ProductComments({ productId }: { productId: string }) {
     }
 
     useEffect(() => {
-        const commentsQuery = query(collection(db, 'products', productId, 'comments'), orderBy('timestamp', 'desc'));
+        // Use the local constant which is guaranteed to be non-null here.
+        const commentsQuery = query(collection(firestoreDb, 'products', productId, 'comments'), orderBy('timestamp', 'desc'));
         const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
             const fetchedComments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CommentType));
             setComments(fetchedComments);
         });
         return () => unsubscribe();
-    }, [productId]);
+    }, [productId, firestoreDb]); // Add firestoreDb to dependency array
 
     const handleCommentSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newComment.trim()) return;
         setIsSubmittingComment(true);
         try {
-        await addDoc(collection(db, 'products', productId, 'comments'), {
+        // Use the local constant here as well for consistency.
+        await addDoc(collection(firestoreDb, 'products', productId, 'comments'), {
             productId: productId,
             userId: DUMMY_USER.id,
             userName: DUMMY_USER.name,

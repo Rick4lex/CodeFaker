@@ -13,9 +13,10 @@ export function ProductReactions({ productId }: { productId: string }) {
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+  const firestoreDb = db; // Assign db to a local constant
 
   // Si la base de datos no está configurada, muestra un botón deshabilitado.
-  if (!db) {
+  if (!firestoreDb) {
     return (
       <Button size="lg" variant="outline" className="flex-1 border-primary text-primary" disabled>
         <ThumbsUp className='mr-2 h-5 w-5' />
@@ -25,7 +26,7 @@ export function ProductReactions({ productId }: { productId: string }) {
   }
 
   useEffect(() => {
-    const likeDocRef = doc(db, 'products', productId, 'likes', 'likeData');
+    const likeDocRef = doc(firestoreDb, 'products', productId, 'likes', 'likeData');
     const unsubscribe = onSnapshot(likeDocRef, (docSnap) => {
       if (docSnap.exists()) {
         setLikes(docSnap.data().count || 0);
@@ -38,15 +39,15 @@ export function ProductReactions({ productId }: { productId: string }) {
     setHasLiked(userLiked);
 
     return () => unsubscribe();
-  }, [productId]);
+  }, [productId, firestoreDb]);
 
   const handleLike = async () => {
     if (isLiking) return;
     setIsLiking(true);
-    const likeDocRef = doc(db, 'products', productId, 'likes', 'likeData');
+    const likeDocRef = doc(firestoreDb, 'products', productId, 'likes', 'likeData');
 
     try {
-      await runTransaction(db, async (transaction) => {
+      await runTransaction(firestoreDb, async (transaction) => {
         const likeDoc = await transaction.get(likeDocRef);
         const newCount = (likeDoc.data()?.count || 0) + (hasLiked ? -1 : 1);
         
