@@ -33,9 +33,20 @@ if (allVarsSet) {
   // Si faltan variables, la app no se bloqueará, pero Firebase no funcionará.
   // Se mostrará una advertencia en la consola del servidor.
   console.warn(
-    'ADVERTENCIA DE CONFIGURACIÓN: Faltan una o más variables de entorno de Firebase. ' +
-    'La aplicación se ejecutará, pero las funcionalidades que dependen de la base de datos (productos, comentarios, etc.) estarán deshabilitadas. ' +
-    'Asegúrate de que todas las variables NEXT_PUBLIC_FIREBASE_* estén configuradas correctamente en Vercel.'
+    '\n' +
+    '******************************************************************\n' +
+    '*** ADVERTENCIA DE CONFIGURACIÓN DE FIREBASE ***\n' +
+    '******************************************************************\n' +
+    'No se encontraron todas las variables de entorno de Firebase.\n' +
+    'La aplicación se ejecutará, pero las funcionalidades que dependen\n' +
+    'de la base de datos (productos, comentarios, admin, etc.) estarán\n' +
+    'DESHABILITADAS.\n\n' +
+    'Para solucionarlo:\n' +
+    '1. Asegúrate de que TODAS las variables NEXT_PUBLIC_FIREBASE_* \n' +
+    '   estén configuradas en tu archivo .env.local (local) o en Vercel.\n' +
+    '2. Si las añadiste en Vercel, asegúrate de haber hecho un "Redeploy"\n' +
+    '   para que los cambios tomen efecto.\n' +
+    '******************************************************************\n'
   );
 }
 
