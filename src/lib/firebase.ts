@@ -3,6 +3,33 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth'; // If you need auth
 
+
+// ============================================================================
+// IMPORTANT: How to Fix the "(auth/invalid-api-key)" Error
+// ============================================================================
+// This error means your Firebase environment variables are not set correctly.
+// You need to provide them so the application can connect to Firebase.
+//
+// 1. **For Local Development**:
+//    - Create a file named `.env.local` in the root of your project.
+//    - Add your Firebase configuration keys to this file.
+//
+// 2. **For Deployment (Vercel, etc.)**:
+//    - Go to your project settings on your hosting provider (e.g., Vercel).
+//    - Add the same keys as "Environment Variables".
+//
+// You can get these keys from your Firebase project settings page.
+//
+// --- Example for your .env.local file ---
+// NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
+// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+// NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+// NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1234567890
+// NEXT_PUBLIC_FIREBASE_APP_ID=1:1234567890:web:abcdef...
+// ============================================================================
+
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -19,46 +46,29 @@ const auth = getAuth(app); // If you need auth
 
 export { app, db , auth };
 
-// IMPORTANT: Ensure you have set up these environment variables in your Vercel project
-/*
-NEXT_PUBLIC_FIREBASE_API_KEY
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-NEXT_PUBLIC_FIREBASE_PROJECT_ID
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-NEXT_PUBLIC_FIREBASE_APP_ID
-*/
 
-// Also, ensure your Firestore security rules are set up correctly. For comments and reactions:
 /*
+Note: Your Firestore security rules should be set in the Firebase console, not here.
+Example rules:
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Products collection (assuming product metadata is not in Firestore for now)
     match /products/{productId} {
-      // Allow reading product metadata if you ever move it here
-      // allow read: if true;
+      allow read: if true;
+      allow write: if request.auth != null; // For admin actions
 
-      // Comments subcollection
       match /comments/{commentId} {
         allow read: if true;
-        allow create: if request.auth != null; // Example: Only authenticated users can comment
-        // allow update, delete: if request.auth.uid == resource.data.userId; // Example: Users can only edit/delete their own comments
+        allow create: if true; // Allow anonymous comments
       }
-
-      // Reactions (like count) - if storing as a field on product document
-      // allow update: if request.auth != null; // Example: Authenticated users can react (use transactions)
-
-      // Or, if reactions are a subcollection (e.g., to store who liked)
-      match /reactions/{userId} {
+       match /likes/{likeId} {
         allow read: if true;
-        allow write: if request.auth != null && request.auth.uid == userId;
+        allow write: if true; // Allow anyone to like/unlike
       }
-       match /likes/{likeId} { // Or a general 'likes' subcollection
-        allow read: if true;
-        allow create: if request.auth != null; // Allow authenticated users to like
-        // Potentially allow delete if you want to support unliking by specific user
-      }
+    }
+    match /contactSubmissions/{submissionId} {
+        allow create: if true; // Allow anyone to submit the contact form
     }
   }
 }

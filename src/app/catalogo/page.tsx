@@ -1,22 +1,45 @@
 
-"use client";
+'use client'
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ProductCard } from '@/components/ProductCard';
-import { allProducts, getAllCategories, getAllSubCategories } from '@/lib/products';
+import { getAllCategories, getAllSubCategories, getProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
 export default function CatalogoPage() {
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>('Todas');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const categories = useMemo(() => getAllCategories(), []);
-  const subCategories = useMemo(() => getAllSubCategories(selectedCategory), [selectedCategory]);
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      const [productsData, categoriesData] = await Promise.all([
+          getProducts(),
+          getAllCategories()
+      ]);
+      setAllProducts(productsData);
+      setCategories(categoriesData);
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
+  
+  const subCategories = useMemo(() => {
+     let productsToFilter = allProducts;
+     if (selectedCategory && selectedCategory !== 'Todos') {
+        productsToFilter = allProducts.filter(p => p.category === selectedCategory);
+     }
+     const subs = new Set(productsToFilter.map(p => p.subCategory).filter(Boolean as any));
+     return ['Todas', ...Array.from(subs)];
+  }, [allProducts, selectedCategory]);
+
 
   const filteredProducts = useMemo(() => {
     let products = allProducts;
@@ -25,12 +48,9 @@ export default function CatalogoPage() {
       products = products.filter(p => p.category === selectedCategory);
     }
 
-    if (selectedSubCategory !== 'Todas' && selectedCategory !== 'Todos') {
-       products = products.filter(p => p.subCategory === selectedSubCategory);
-    } else if (selectedSubCategory !== 'Todas' && selectedCategory === 'Todos') {
+    if (selectedSubCategory !== 'Todas') {
        products = products.filter(p => p.subCategory === selectedSubCategory);
     }
-
 
     if (searchTerm) {
       products = products.filter(p =>
@@ -40,14 +60,13 @@ export default function CatalogoPage() {
       );
     }
     return products;
-  }, [searchTerm, selectedCategory, selectedSubCategory]);
+  }, [allProducts, searchTerm, selectedCategory, selectedSubCategory]);
 
    // Reset subcategory when category changes
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setSelectedSubCategory('Todas');
   };
-
 
   return (
     <div className="space-y-8">
@@ -83,7 +102,7 @@ export default function CatalogoPage() {
             </SelectContent>
           </Select>
 
-          <Select value={selectedSubCategory} onValueChange={setSelectedSubCategory} disabled={selectedCategory === 'Todos' && subCategories.length <=1}>
+          <Select value={selectedSubCategory} onValueChange={setSelectedSubCategory} disabled={subCategories.length <=1}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Filtrar por subcategoría" />
             </SelectTrigger>
@@ -97,7 +116,9 @@ export default function CatalogoPage() {
       </section>
 
       <section>
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+             <p className="text-center text-muted-foreground text-lg py-10">Cargando productos...</p>
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />

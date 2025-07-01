@@ -2,8 +2,8 @@
 import { ProductCard } from '@/components/ProductCard';
 import { getProductsByCategory } from '@/lib/products';
 
-export default function ConfeccionesPage() {
-  const confecciones = getProductsByCategory('Confecciones');
+export default async function ConfeccionesPage() {
+  const confecciones = await getProductsByCategory('Confecciones');
   return (
     <div className="space-y-8">
       <section className="text-center py-8">

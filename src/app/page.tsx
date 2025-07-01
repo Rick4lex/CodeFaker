@@ -4,48 +4,58 @@ import { Button } from '@/components/ui/button';
 import type { Category } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { getAllCategories } from '@/lib/products';
 
-// Configuration for category visibility (Requirement 2.1)
-const categoryConfig: Record<string, { visible: boolean }> = {
-  servicios: { visible: true },
-  dibujos: { visible: true },
-  confecciones: { visible: false },
-  // Example: to hide 'dibujos', set: dibujos: { visible: false },
-};
-
-const allCategories: Category[] = [
-  {
-    id: 'servicios',
-    title: 'Servicios',
-    description: 'Facilitamos tus gestiones y trámites con eficiencia y profesionalismo. Consulta nuestro catálogo de servicios.',
-    imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748926185/Rick_bra_nd_e7wn4b.png',
-    imageHint: 'legal documents paperwork',
-    linkUrl: '/servicios', // Consider changing to /catalogo?category=Servicios
-    visible: categoryConfig.servicios.visible,
-  },
-  {
-    id: 'dibujos',
-    title: 'Arte y Colecciones',
-    description: 'Descubre nuestra colección única de figuras y artículos personalizados con diseños artísticos y creativos.',
-    imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927897/David_bra_nd_yptryg.png',
-    imageHint: 'artistic figures drawings',
-    linkUrl: '/dibujos', // Consider changing to /catalogo?category=Arte y Colecciones
-    visible: categoryConfig.dibujos.visible,
-  },
-  {
-    id: 'confecciones',
-    title: 'Confecciones',
-    description: 'Ropa a medida y peluches adorables hechos con amor y materiales de alta calidad. Diseños únicos y personalizados.',
-    imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927537/Alexa_bra_nd_jbwzrn.png',
-    imageHint: 'custom clothing plush toys',
-    linkUrl: '/confecciones', // Consider changing to /catalogo?category=Confecciones
-    visible: categoryConfig.confecciones.visible,
-  },
+// Category data is now fetched dynamically from products in Firestore.
+// The visibility is managed by adding/removing products of a category in the admin panel.
+const categoryDetails: Omit<Category, 'id' | 'linkUrl' | 'title'>[] = [
+    {
+      description: 'Facilitamos tus gestiones y trámites con eficiencia y profesionalismo. Consulta nuestro catálogo de servicios.',
+      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748926185/Rick_bra_nd_e7wn4b.png',
+      imageHint: 'legal documents paperwork',
+    },
+    {
+      description: 'Descubre nuestra colección única de figuras y artículos personalizados con diseños artísticos y creativos.',
+      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927897/David_bra_nd_yptryg.png',
+      imageHint: 'artistic figures drawings',
+    },
+    {
+      description: 'Ropa a medida y peluches adorables hechos con amor y materiales de alta calidad. Diseños únicos y personalizados.',
+      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927537/Alexa_bra_nd_jbwzrn.png',
+      imageHint: 'custom clothing plush toys',
+    },
 ];
 
-const displayedCategories = allCategories.filter(cat => cat.visible);
+const categoryNameToDetailsMap: Record<string, Omit<Category, 'id' | 'linkUrl' | 'title'>> = {
+  'Servicios': categoryDetails[0],
+  'Arte y Colecciones': categoryDetails[1],
+  'Confecciones': categoryDetails[2],
+};
 
-export default function HomePage() {
+
+export default async function HomePage() {
+  const categoryNames = await getAllCategories();
+
+  // Filter out "Todos" and create full category objects
+  const displayedCategories: Category[] = categoryNames
+    .filter(name => name !== 'Todos')
+    .map(name => {
+        const details = categoryNameToDetailsMap[name] || {
+            description: `Explora nuestros productos en la categoría ${name}.`,
+            imageUrl: 'https://placehold.co/600x400.png',
+            imageHint: 'product category',
+        };
+        return {
+            ...details,
+            id: name.toLowerCase().replace(/ /g, '-'),
+            title: name,
+            linkUrl: `/${name.toLowerCase().replace(/ /g, '-')}`, // e.g. /arte-y-colecciones - ensure you have pages for these or link to catalog
+        };
+    })
+    // A temporary filter to hide "Confecciones" as requested previously.
+    // To show it again, just remove this .filter() line.
+    .filter(cat => cat.title !== 'Confecciones');
+
   return (
     <div className="space-y-12 md:space-y-16">
       {/* Hero Section */}

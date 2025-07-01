@@ -2,8 +2,8 @@
 import { ProductCard } from '@/components/ProductCard';
 import { getProductsByCategory } from '@/lib/products';
 
-export default function ServiciosPage() {
-  const services = getProductsByCategory('Servicios');
+export default async function ServiciosPage() {
+  const services = await getProductsByCategory('Servicios');
 
   return (
     <div className="space-y-8">

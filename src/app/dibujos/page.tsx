@@ -2,8 +2,8 @@
 import { ProductCard } from '@/components/ProductCard';
 import { getProductsByCategory } from '@/lib/products';
 
-export default function DibujosPage() {
-  const drawings = getProductsByCategory('Arte y Colecciones');
+export default async function DibujosPage() {
+  const drawings = await getProductsByCategory('Arte y Colecciones');
 
   return (
     <div className="space-y-8">
@@ -28,4 +28,3 @@ export default function DibujosPage() {
     </div>
   );
 }
-

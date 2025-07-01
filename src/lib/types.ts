@@ -1,4 +1,6 @@
 
+import type { Timestamp } from "firebase/firestore";
+
 export interface Category {
   id: string;
   title: string;
@@ -25,6 +27,8 @@ export interface Product {
   sku?: string;
   stock?: number;
   relatedProducts?: string[]; // array of product IDs
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Service extends Product {}
