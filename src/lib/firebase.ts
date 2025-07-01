@@ -39,6 +39,11 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check if Firebase config keys are provided to give a better error message.
+if (!firebaseConfig.apiKey) {
+    throw new Error('Firebase API Key is not set. Please add NEXT_PUBLIC_FIREBASE_API_KEY to your .env.local file or environment variables.');
+}
+
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
