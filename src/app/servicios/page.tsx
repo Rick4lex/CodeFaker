@@ -1,10 +1,9 @@
 
-import { ProductCard } from '@/components/ProductCard';
-import { getProductsByCategory } from '@/lib/products';
+import { Suspense } from 'react';
+import { ProductGrid } from '@/components/ProductGrid';
+import { ProductGridSkeleton } from '@/components/ProductGridSkeleton';
 
 export default async function ServiciosPage() {
-  const services = await getProductsByCategory('Servicios');
-
   return (
     <div className="space-y-8">
       <section className="text-center py-8">
@@ -15,15 +14,9 @@ export default async function ServiciosPage() {
       </section>
 
       <section>
-        {services.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {services.map((service) => (
-              <ProductCard key={service.id} product={service} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground">No hay servicios disponibles en este momento.</p>
-        )}
+        <Suspense fallback={<ProductGridSkeleton count={3} />}>
+            <ProductGrid category="Servicios" />
+        </Suspense>
       </section>
     </div>
   );

@@ -3,11 +3,12 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { ProductCard } from '@/components/ProductCard';
-import { getAllCategories, getAllSubCategories, getProducts } from '@/lib/products';
+import { getAllCategories, getProducts } from '@/lib/products';
 import type { Product } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { ProductCardSkeleton } from '@/components/ProductCardSkeleton';
 
 export default function CatalogoPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -117,7 +118,11 @@ export default function CatalogoPage() {
 
       <section>
         {isLoading ? (
-             <p className="text-center text-muted-foreground text-lg py-10">Cargando productos...</p>
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+            </div>
         ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
             {filteredProducts.map((product) => (

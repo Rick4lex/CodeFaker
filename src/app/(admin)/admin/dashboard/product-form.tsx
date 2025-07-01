@@ -18,11 +18,13 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import type { Product } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 export function ProductFormModal() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
+  const { toast } = useToast();
   
   const [state, formAction] = useFormState(saveProduct, undefined);
   
@@ -36,9 +38,11 @@ export function ProductFormModal() {
   const product: Product | null = productData ? JSON.parse(productData) : null;
   
   useEffect(() => {
-    if (state?.message && !state?.errors) {
+    if (state?.success) {
+      toast({ title: 'Éxito', description: state.message });
       handleClose();
-      // Maybe show a success toast here
+    } else if (state?.message && state?.errors) {
+      toast({ title: 'Error', description: state.message, variant: 'destructive' });
     }
   }, [state]);
 
@@ -116,8 +120,6 @@ export function ProductFormModal() {
             <Button type="button" variant="outline" onClick={handleClose}>Cancelar</Button>
             <Button type="submit">Guardar Cambios</Button>
           </DialogFooter>
-           {state?.message && !state?.errors && <p className="text-sm text-green-600">{state.message}</p>}
-           {state?.message && state?.errors && <p className="text-sm text-destructive">{state.message}</p>}
         </form>
       </DialogContent>
     </Dialog>

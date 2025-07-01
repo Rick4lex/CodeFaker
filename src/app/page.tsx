@@ -1,61 +1,13 @@
 
-import { CategoryCard } from '@/components/CategoryCard';
+import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
-import type { Category } from '@/lib/types';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getAllCategories } from '@/lib/products';
-
-// Category data is now fetched dynamically from products in Firestore.
-// The visibility is managed by adding/removing products of a category in the admin panel.
-const categoryDetails: Omit<Category, 'id' | 'linkUrl' | 'title'>[] = [
-    {
-      description: 'Facilitamos tus gestiones y trámites con eficiencia y profesionalismo. Consulta nuestro catálogo de servicios.',
-      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748926185/Rick_bra_nd_e7wn4b.png',
-      imageHint: 'legal documents paperwork',
-    },
-    {
-      description: 'Descubre nuestra colección única de figuras y artículos personalizados con diseños artísticos y creativos.',
-      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927897/David_bra_nd_yptryg.png',
-      imageHint: 'artistic figures drawings',
-    },
-    {
-      description: 'Ropa a medida y peluches adorables hechos con amor y materiales de alta calidad. Diseños únicos y personalizados.',
-      imageUrl: 'https://res.cloudinary.com/dyeppbrfl/image/upload/v1748927537/Alexa_bra_nd_jbwzrn.png',
-      imageHint: 'custom clothing plush toys',
-    },
-];
-
-const categoryNameToDetailsMap: Record<string, Omit<Category, 'id' | 'linkUrl' | 'title'>> = {
-  'Servicios': categoryDetails[0],
-  'Arte y Colecciones': categoryDetails[1],
-  'Confecciones': categoryDetails[2],
-};
+import { CategorySection } from '@/components/home/CategorySection';
+import { CategoryGridSkeleton } from '@/components/CategoryGridSkeleton';
 
 
 export default async function HomePage() {
-  const categoryNames = await getAllCategories();
-
-  // Filter out "Todos" and create full category objects
-  const displayedCategories: Category[] = categoryNames
-    .filter(name => name !== 'Todos')
-    .map(name => {
-        const details = categoryNameToDetailsMap[name] || {
-            description: `Explora nuestros productos en la categoría ${name}.`,
-            imageUrl: 'https://placehold.co/600x400.png',
-            imageHint: 'product category',
-        };
-        return {
-            ...details,
-            id: name.toLowerCase().replace(/ /g, '-'),
-            title: name,
-            linkUrl: `/${name.toLowerCase().replace(/ /g, '-')}`, // e.g. /arte-y-colecciones - ensure you have pages for these or link to catalog
-        };
-    })
-    // A temporary filter to hide "Confecciones" as requested previously.
-    // To show it again, just remove this .filter() line.
-    .filter(cat => cat.title !== 'Confecciones');
-
   return (
     <div className="space-y-12 md:space-y-16">
       {/* Hero Section */}
@@ -88,23 +40,9 @@ export default async function HomePage() {
       </section>
 
       {/* Categories Section */}
-      {displayedCategories.length > 0 && (
-        <section>
-          <h2 className="text-3xl font-bold text-center mb-8 md:mb-12 text-foreground">Nuestras Categorías</h2>
-          <div className="flex justify-center">
-            <div className={`grid grid-cols-1 gap-6 md:gap-8 ${
-                displayedCategories.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'
-              } ${
-                displayedCategories.length === 1 ? 'lg:grid-cols-1' :
-                displayedCategories.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
-              }`}>
-              {displayedCategories.map((category) => (
-                <CategoryCard key={category.id} category={category} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <Suspense fallback={<CategoryGridSkeleton />}>
+        <CategorySection />
+      </Suspense>
 
     </div>
   );

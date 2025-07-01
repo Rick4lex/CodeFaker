@@ -1,9 +1,10 @@
 
-import { ProductCard } from '@/components/ProductCard';
-import { getProductsByCategory } from '@/lib/products';
+import { Suspense } from 'react';
+import { ProductGrid } from '@/components/ProductGrid';
+import { ProductGridSkeleton } from '@/components/ProductGridSkeleton';
+
 
 export default async function ConfeccionesPage() {
-  const confecciones = await getProductsByCategory('Confecciones');
   return (
     <div className="space-y-8">
       <section className="text-center py-8">
@@ -14,15 +15,9 @@ export default async function ConfeccionesPage() {
       </section>
 
       <section>
-        {confecciones.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {confecciones.map((item) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground">No hay confecciones disponibles en este momento.</p>
-        )}
+        <Suspense fallback={<ProductGridSkeleton count={3} />}>
+          <ProductGrid category="Confecciones" />
+        </Suspense>
       </section>
     </div>
   );
