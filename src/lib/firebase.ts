@@ -1,66 +1,49 @@
 
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
-import { getAuth, type Auth } from 'firebase/auth'; // If you need auth
+import { getAuth, type Auth } from 'firebase/auth';
 
 // ============================================================================
-// ¡¡¡ACCIÓN URGENTE REQUERIDA!!!
+// ¡¡¡CAMBIO TEMPORAL IMPORTANTE!!!
 // ============================================================================
-// El error "invalid-api-key" significa que tus variables de entorno de Firebase
-// no están configuradas. Debes proporcionarlas para que la aplicación funcione.
+// Para desbloquear el desarrollo, hemos insertado tus credenciales de Firebase
+// directamente aquí. ESTO NO ES SEGURO PARA PRODUCCIÓN.
 //
-// 1. **Para Desarrollo Local**:
-//    - Crea un archivo llamado `.env.local` en la raíz de tu proyecto.
-//    - Añade tus claves de configuración de Firebase a este archivo.
+// ANTES DE PUBLICAR TU SITIO, DEBES:
+// 1. Revertir este archivo para que lea las variables de entorno (process.env).
+// 2. Configurar estas claves de forma segura en las "Environment Variables"
+//    de tu proveedor de hosting (ej. Vercel).
 //
-// 2. **Para Producción (Vercel)**:
-//    - Ve a la configuración de tu proyecto en Vercel.
-//    - Añade las mismas claves en la sección "Environment Variables".
-//
-// --- Ejemplo para tu archivo .env.local o Vercel ---
-// NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
-// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tu-proyecto.firebaseapp.com
-// NEXT_PUBLIC_FIREBASE_PROJECT_ID=tu-proyecto-id
-// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=tu-proyecto.appspot.com
-// NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1234567890
-// NEXT_PUBLIC_FIREBASE_APP_ID=1:1234567890:web:abcdef...
+// Exponer estas claves directamente en el código es un riesgo de seguridad.
 // ============================================================================
-
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyD8O_6HQMXCwO40GXcDvfVqiM9xCH2QG80",
+  authDomain: "code-faker.firebaseapp.com",
+  projectId: "code-faker",
+  // NOTA: Se corrigió el valor de storageBucket. El formato correcto es .appspot.com
+  storageBucket: "code-faker.appspot.com",
+  messagingSenderId: "618883006228",
+  appId: "1:618883006228:web:870953512be1a3661f0c01"
 };
 
-let app: FirebaseApp | null = null;
-let db: Firestore | null = null;
-let auth: Auth | null = null;
 
-// Solo inicializamos Firebase si la clave de API está presente.
-if (firebaseConfig.apiKey) {
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    db = getFirestore(app);
-    auth = getAuth(app);
+// --- Inicialización de Firebase ---
+let app: FirebaseApp;
+let db: Firestore;
+let auth: Auth;
+
+// Verificamos si ya hay una app de Firebase inicializada para evitar errores en hot-reloads
+if (getApps().length) {
+  app = getApp();
 } else {
-    console.warn(`
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !!  ADVERTENCIA: VARIABLES DE ENTORNO DE FIREBASE NO CONFIGURADAS                 !!
-    !!                                                                              !!
-    !!  La aplicación se ejecutará, pero las funciones que dependen de Firebase      !!
-    !!  (productos, admin, comentarios) no funcionarán correctamente.               !!
-    !!                                                                              !!
-    !!  Para solucionarlo, añade tus credenciales de Firebase a la configuración     !!
-    !!  de tu proyecto en Vercel o en un archivo local .env.local.                   !!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    `);
+  app = initializeApp(firebaseConfig);
 }
 
+db = getFirestore(app);
+auth = getAuth(app);
 
-export { app, db , auth };
+export { app, db, auth };
 
 
 /*
@@ -82,9 +65,6 @@ service cloud.firestore {
         allow read: if true;
         allow write: if true; // Permitir que cualquiera dé "me gusta"
       }
-    }
-    match /contactSubmissions/{submissionId} {
-        allow create: if true; // Permitir que cualquiera envíe el formulario de contacto
     }
   }
 }
